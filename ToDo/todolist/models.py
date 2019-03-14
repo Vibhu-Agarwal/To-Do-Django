@@ -21,6 +21,7 @@ class ToDoList(models.Model):
     due_date = models.DateField(default=timezone.now().strftime("%Y-%m-%d"))
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    completed = models.BooleanField(default=False)
 
     class Meta:
         ordering = ["-created"]
