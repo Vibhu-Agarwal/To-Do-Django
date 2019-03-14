@@ -14,8 +14,8 @@ SENDER_PASSWORD = ''
 
 #@periodic_task(run_every=crontab(minute=[4, 5, 34, 35]))
 def check_due_date(request):
-    users = User.objects.filter(id=1)
-    #users = User.objects.all()
+    #users = User.objects.filter(id=1)
+    users = User.objects.all()
     task_msg = """
     
     Task: {title}
@@ -42,8 +42,7 @@ def check_due_date(request):
             print(user.email, 'Heading', mail_content)
             sent_status, msg = mail.send_email()
             if not sent_status:
-                return render(request, 'error.html', {'detail': msg})
-    return render(request, 'success.html', {'detail': 'Mails Sent!'})
+                print("Could Not Send Email to", user.username)
 
 
 def todos_data(request, user_id):
