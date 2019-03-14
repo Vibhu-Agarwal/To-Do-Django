@@ -54,6 +54,7 @@ def todos_data(request, user_id):
         for todo_query in todo_query_set:
             todo = {'title': todo_query.title,
                     'description': todo_query.description,
+                    'created_by': str(todo_query.user),
                     'created': todo_query.created,
                     'due date': todo_query.due_date,
                     'category': str(todo_query.category),
@@ -61,6 +62,15 @@ def todos_data(request, user_id):
             todo_list.append(todo)
         response['to-dos'] = todo_list
     return response
+
+
+def api(request):
+    users = User.objects.all()
+    response = {}
+    for user in users:
+        tasks = todos_data(request, user.id)['to-dos']
+        response[user.username] = tasks
+    return JsonResponse(response)
 
 
 def todos_api(request, user_id):
@@ -92,3 +102,13 @@ def add_task(request):
     else:
         form = TaskForm()
         return render(request, 'addTask.html', {'form': form})
+
+
+@login_required(login_url='/user/login/')
+def delete_task(request, task_id):
+    user_id = request.user.id
+    selected_task = ToDoList.objects.get(id=task_id)
+    selected_task = selected_task[0]
+    if selected_task.user.id == user_id:
+        print('Deleting Task:', selected_task.title)
+        selected_task.delete()
