@@ -5,7 +5,32 @@
     <title>Personal To-Dos</title>
 </head>
 <body>
+  {% if len_tasks > 0 %}
   <h2>Personal Tasks</h2>
-
+  <ul>
+    {% for task in tasks %}
+      <li>
+          {{task.title}}
+          <ul>
+              <br>
+              {{task.description}}
+              <br><br>
+              <li>Added On: {{task.created}}</li>
+              <li>Due Date: {{task.due_date}}</li>
+              <li>Category: {{task.category}}</li>
+              <li>
+                  <a href="#">Edit</a>
+              </li>
+              <li>
+                  <a href="#">Delete</a>
+              </li>
+          </ul>
+      </li>
+      <br><br>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <h2>No Tasks Added</h2>
+  {% endif %}
 </body>
 </html>

@@ -56,7 +56,7 @@ def todos_data(request, user_id):
                     'description': todo_query.description,
                     'created_by': str(todo_query.user),
                     'created': todo_query.created,
-                    'due date': todo_query.due_date,
+                    'due_date': todo_query.due_date,
                     'category': str(todo_query.category),
                     'due': 'No' if todo_query.completed else 'Yes'}
             todo_list.append(todo)
@@ -81,8 +81,10 @@ def todos_api(request, user_id):
 @login_required(login_url='/user/login/')
 def todos(request):
     user_id = request.user.id
-    todo_data = todos_data(request, user_id)
-    return render(request, 'todos.html', {})
+    todo_data = todos_data(request, user_id)['to-dos']
+    print("Passing:", todo_data)
+    return render(request, 'todos.html', {'tasks': todo_data,
+                                          'len_tasks': len(todo_data)})
 
 
 @login_required(login_url='/user/login/')
@@ -108,7 +110,8 @@ def add_task(request):
 def delete_task(request, task_id):
     user_id = request.user.id
     selected_task = ToDoList.objects.get(id=task_id)
-    selected_task = selected_task[0]
+    print(user_id, selected_task.user.id)
+    print('Selected Task:', selected_task.title)
     if selected_task.user.id == user_id:
         print('Deleting Task:', selected_task.title)
         selected_task.delete()
