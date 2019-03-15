@@ -66,7 +66,7 @@ def todos_data(request, user_id):
                     'category': str(todo_query.category),
                     'due': 'No' if todo_query.completed else 'Yes'}
             todo_list.append(todo)
-        response['to-dos'] = todo_list
+        response['tasks'] = todo_list
     return response
 
 
@@ -74,13 +74,17 @@ def api(request):
     users = User.objects.all()
     response = {}
     for user in users:
-        tasks = todos_data(request, user.id)['to-dos']
-        response[user.username] = tasks
+        tasks = todos_data(request, user.id)['tasks']
+        response[user.username] = {}
+        response[user.username]['user_id'] = user.id
+        response[user.username]['tasks'] = tasks
     return JsonResponse(response)
 
 
 def todos_api(request, user_id):
-    response = todos_data(request, user_id)
+    user = User.objects.get(id=user_id)
+    response = {'user': user.username}
+    response.update(todos_data(request, user_id))
     return JsonResponse(response)
 
 
