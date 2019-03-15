@@ -81,8 +81,20 @@ def todos_api(request, user_id):
 @login_required(login_url='/user/login/')
 def todos(request):
     user_id = request.user.id
-    todo_data = todos_data(request, user_id)['to-dos']
-    print("Passing:", todo_data)
+
+    user = User.objects.get(id=user_id)
+    todo_query_set = ToDoList.objects.filter(user=user)
+    todo_data = []
+    for todo_query in todo_query_set:
+        todo = {'task_id': todo_query.id,
+                'title': todo_query.title,
+                'description': todo_query.description,
+                'created_by': str(todo_query.user),
+                'created': todo_query.created,
+                'due_date': todo_query.due_date,
+                'category': str(todo_query.category),
+                'due': 'No' if todo_query.completed else 'Yes'}
+        todo_data.append(todo)
     return render(request, 'todos.html', {'tasks': todo_data,
                                           'len_tasks': len(todo_data)})
 
@@ -115,3 +127,4 @@ def delete_task(request, task_id):
     if selected_task.user.id == user_id:
         print('Deleting Task:', selected_task.title)
         selected_task.delete()
+    return redirect('to-dos')
