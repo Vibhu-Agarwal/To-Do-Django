@@ -144,7 +144,10 @@ def edit_task(request, task_id):
     user_id = request.user.id
     selected_task = get_object_or_404(ToDoList, id=task_id)
     if selected_task.user.id == user_id:
-        # Edit Task
-        return redirect('todolist:tasks')
+        form = TaskForm(request.POST or None, instance=selected_task)
+        if form.is_valid():
+            form.save()
+            return redirect('todolist:tasks')
+        return render(request, 'addTask.html', {'form': form})
     else:
         return render(request, 'error.html', {'detail': 'Permission Denied!'}, status=403)

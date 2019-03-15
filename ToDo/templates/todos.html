@@ -22,7 +22,7 @@
               <li>Due Date: {{task.due_date}}</li>
               <li>Category: {{task.category}}</li>
               <li>
-                  <a href="#">Edit</a>
+                  <a href="{% url 'todolist:Edit Task' task.task_id%}"">Edit</a>
               </li>
               <li>
                   <a href="{% url 'todolist:Delete Task' task.task_id%}">Delete</a>

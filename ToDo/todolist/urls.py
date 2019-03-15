@@ -10,5 +10,6 @@ urlpatterns = [
     path('add-task/', add_task, name='Add Task'),
     path('tasks/', todos, name='tasks'),
     path('check/', check_due_date),
-    path('delete-task/<int:task_id>', delete_task, name='Delete Task')
+    path('delete-task/<int:task_id>', delete_task, name='Delete Task'),
+    path('edit-task/<int:task_id>', edit_task, name='Edit Task')
 ]
