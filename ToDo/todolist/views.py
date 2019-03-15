@@ -12,6 +12,12 @@ SENDER_EMAIL_ID = ''
 SENDER_PASSWORD = ''
 
 
+@login_required(login_url='/user/login')
+def home(request):
+    username = request.user.username
+    return render(request, 'home.html', {'username': username})
+
+
 #@periodic_task(run_every=crontab(minute=[4, 5, 34, 35]))
 def check_due_date(request):
     #users = User.objects.filter(id=1)
@@ -110,7 +116,7 @@ def add_task(request):
             task.refresh_from_db()
             task.user = user
             task.save()
-            return redirect('')
+            return redirect('todolist:tasks')
         else:
             return render(request, 'error.html', {'detail': "Invalid Task Entry"})
     else:
@@ -122,9 +128,6 @@ def add_task(request):
 def delete_task(request, task_id):
     user_id = request.user.id
     selected_task = ToDoList.objects.get(id=task_id)
-    print(user_id, selected_task.user.id)
-    print('Selected Task:', selected_task.title)
     if selected_task.user.id == user_id:
-        print('Deleting Task:', selected_task.title)
         selected_task.delete()
-    return redirect('to-dos')
+    return redirect('todolist:tasks')

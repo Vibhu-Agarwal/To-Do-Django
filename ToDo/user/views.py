@@ -8,7 +8,7 @@ def signup(request):
         form = SignUpForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('')
+            return redirect('todolist:homepage')
         else:
             return render(request, 'error.html', {'detail': 'Invalid Form!'})
     else:
