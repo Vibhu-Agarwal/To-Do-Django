@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .forms import *
 from django.http import HttpResponse, JsonResponse
 from .models import *
@@ -131,7 +131,20 @@ def add_task(request):
 @login_required(login_url='/user/login/')
 def delete_task(request, task_id):
     user_id = request.user.id
-    selected_task = ToDoList.objects.get(id=task_id)
+    selected_task = get_object_or_404(ToDoList, id=task_id)
     if selected_task.user.id == user_id:
         selected_task.delete()
-    return redirect('todolist:tasks')
+        return redirect('todolist:tasks')
+    else:
+        return render(request, 'error.html', {'detail': 'Permission Denied!'}, status=403)
+
+
+@login_required(login_url='/user/login')
+def edit_task(request, task_id):
+    user_id = request.user.id
+    selected_task = get_object_or_404(ToDoList, id=task_id)
+    if selected_task.user.id == user_id:
+        # Edit Task
+        return redirect('todolist:tasks')
+    else:
+        return render(request, 'error.html', {'detail': 'Permission Denied!'}, status=403)
